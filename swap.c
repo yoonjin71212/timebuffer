@@ -1,18 +1,12 @@
 #include "buffer.h"
 #include <linux/slab.h>
 #include <linux/string.h>
-void swap_struct ( char * a, char * b )
+void swap_struct ( void * a, void * b )
 {
-    char **tmp;
-    if(a==NULL) {
-        return;
-    }
-    if(b==NULL) {
-        return;
-    }
+    void **tmp;
     tmp = &a;
-    memcpy(&a,&b,sizeof(char*));
-    memcpy(&b,tmp,sizeof(char*));
+    memcpy(&a,&b,sizeof(void*));
+    memcpy(&b,tmp,sizeof(void*));
     
 } /*swaps two values' memory address,   *
    *this is far better...               */

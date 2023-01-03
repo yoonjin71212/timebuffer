@@ -47,7 +47,7 @@ node * find ( list * lst, unsigned char * key ) ; /* you can specify node with y
 node * index_node ( list * lst, ll i ) ; /* this returns (i+1)th node. */
 
 /* swap functions for quick sort implementation */
-void swap_struct ( char * a, char * b ); 
+void swap_struct ( void * a, void * b ); 
 void swap_int( int64_t * a, int64_t * b );
 /*----------------------------------------------*/
 

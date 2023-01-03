@@ -57,10 +57,10 @@ void GET_UUID (char * string)
 
 int __init init_device (void)
 {
-    CLASSNAME=kmalloc(sizeof(char)*UUID_LEN,GFP_KERNEL);
-    NAME=kmalloc(sizeof(char)*UUID_LEN,GFP_KERNEL);
+    CLASSNAME=kmalloc(sizeof(char)*UUID_LEN,SLAB_MEM_SPREAD);
+    NAME=kmalloc(sizeof(char)*UUID_LEN,SLAB_MEM_SPREAD);
     GET_UUID(NAME);   /*Name is by UUID */
-    __device_name__=kmalloc(sizeof(char)*UUID_LEN,GFP_KERNEL);
+    __device_name__=kmalloc(sizeof(char)*UUID_LEN,SLAB_MEM_SPREAD);
                                  /* * * * * * * * * */
     GET_UUID(CLASSNAME);         /* Class name and  */
     GET_UUID(__device_name__);   /* Device name is  */
@@ -72,7 +72,7 @@ int __init init_device (void)
     if(err < 0) {
         printk(KERN_ERR "Registering Character Device failed with %d\n", err);
     }
-    lst=kmalloc(sizeof(list),GFP_KERNEL);    /*List is allocated here*/
+    lst=kmalloc(sizeof(list),SLAB_MEM_SPREAD);    /*List is allocated here*/
     init_list(lst);                          /*Now, this initialized your list.*/
     cdev_init(&cdev,&fops);                  /*Gonna initialize its cdev*/
     cdev.owner = THIS_MODULE;                /*Owner is this module, obviously.*/
@@ -144,7 +144,7 @@ ssize_t device_write (struct file * file,
     ssize_t ret = (ssize_t)len;
     int err;
     char * data;
-    data=kmalloc(sizeof(char)*BUFFER_MAX,GFP_KERNEL); /*allocates data region */
+    data=kmalloc(sizeof(char)*BUFFER_MAX,SLAB_MEM_SPREAD); /*allocates data region */
     err = copy_from_user(data,buf,len);               /*Now, it will copy userdata into kernel area*/
     if(err<0) {
         return err;

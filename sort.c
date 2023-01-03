@@ -12,7 +12,7 @@ _Bool comp( ll t_stamp_l, ll t_stamp_r, _Bool is_ascending ) {
 _Bool regen_sorted( list * lst , _Bool is_ascending) {
     node * nd;
     _Bool ret = 0;
-    nd = kmalloc (sizeof(node),GFP_KERNEL);
+    nd = kmalloc (sizeof(node),SLAB_MEM_SPREAD);
     for (nd = lst -> front -> next;nd!=lst->rear->prev;nd=nd->next) {
         ret=(!comp(nd->t_stamp,nd->next->t_stamp,is_ascending));
         if (ret) {
@@ -57,11 +57,11 @@ void sort_func ( list * lst , _Bool is_ascending )
     node *piv,*track;
     uint64_t t_stamp, len;
     list *llst, *rlst;
-    llst=kmalloc(sizeof(list),GFP_KERNEL);    /*List is allocated here*/
-    rlst=kmalloc(sizeof(list),GFP_KERNEL);    /*List is allocated here*/
-    key = kmalloc(sizeof(char)*TEMP_SIZE,GFP_KERNEL);
-    piv = kmalloc(sizeof(node),GFP_KERNEL);
-    track = kmalloc(sizeof(node),GFP_KERNEL);
+    llst=kmalloc(sizeof(list),SLAB_MEM_SPREAD);    /*List is allocated here*/
+    rlst=kmalloc(sizeof(list),SLAB_MEM_SPREAD);    /*List is allocated here*/
+    key = kmalloc(sizeof(char)*TEMP_SIZE,SLAB_MEM_SPREAD);
+    piv = kmalloc(sizeof(node),SLAB_MEM_SPREAD);
+    track = kmalloc(sizeof(node),SLAB_MEM_SPREAD);
 
     if ( lst -> size < 2 ) {
         return;
@@ -79,17 +79,26 @@ void sort_func ( list * lst , _Bool is_ascending )
         } else {
             enqueue ( rlst, track -> key , track -> len , track -> t_stamp );
         }
-        remove_item(lst,track);
         /* Split its keys by t_stamp */
     }
-    sort_func ( llst , is_ascending ) ; /* recursive function calls*/
-    sort_func ( rlst, is_ascending ) ; /*  recursive function calls*/
+    empty_list(lst);
+    if(llst-> size>1) {
+        sort_func ( llst , is_ascending ) ; /* recursive function calls*/
+    }
+    if(rlst->size>1) {
+        sort_func ( rlst, is_ascending ) ; /*  recursive function calls*/
+    }
     /* Concatenates its left-ordered list */
-    concat_list(lst,rlst);
+    swap_struct(lst,llst);
     enqueue(lst,key,len,t_stamp);
     /* Concatenates its right-ordered list */
     concat_list(lst,rlst);
     lst -> size = sz ;
     lst -> is_sorted = 1;
+    kfree(llst);
+    kfree(rlst);
+    kfree(key);
+    kfree(piv);
+    kfree(track);
     /* Regenerate its flag*/
 }
