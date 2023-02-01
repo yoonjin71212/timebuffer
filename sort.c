@@ -52,13 +52,10 @@ void sortthree ( list * lst , _Bool is_ascending)
 void sort_func ( list * lst , _Bool is_ascending )
 {
 
-    char *key;
     node *piv,*track;
-    uint64_t t_stamp, len;
     list *llst, *rlst;
     llst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
     rlst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
-    key = kmalloc(sizeof(char)*TEMP_SIZE,GFP_ATOMIC);
     piv = kmalloc(sizeof(node),GFP_ATOMIC);
     track = kmalloc(sizeof(node),GFP_ATOMIC);
 
@@ -73,9 +70,6 @@ void sort_func ( list * lst , _Bool is_ascending )
     init_list (rlst);
     sortthree( lst , is_ascending );
     piv = lst -> front -> next;
-    key = piv ->  key;
-    len = track -> len;
-    t_stamp = piv -> t_stamp;
     for ( track = lst -> front -> next ; track != lst -> rear ; track = track -> next ) {
         if ( comp(track -> t_stamp , piv -> t_stamp, is_ascending)>0 ) {
             enqueue ( llst, track -> key , track -> len , track -> t_stamp );
