@@ -8,7 +8,7 @@
 #include <linux/types.h>
 #include <asm/uaccess.h>
 #include "buffer_io.h"
-#define TEMP_SIZE 256
+#define TEMP_SIZE 32
 typedef long long ll;
 
 typedef struct node {
@@ -47,7 +47,7 @@ node * find ( list * lst, unsigned char * key ) ; /* you can specify node with y
 node * index_node ( list * lst, ll i ) ; /* this returns (i+1)th node. */
 
 /* swap functions for quick sort implementation */
-void swap_struct ( void * a, void * b ); 
+void swap_string ( char * a, char * b ); 
 void swap_int( int64_t * a, int64_t * b );
 /*----------------------------------------------*/
 
@@ -67,8 +67,8 @@ void sort_func ( list * lst , _Bool is_ascending ); /* Quick sort */
 void sortthree ( list * lst , _Bool is_ascending ); /* Needed for Quick sort implementation */
 ll index_of(list *lst , node *nd);    /* Index of specific node */
 long int __user io_sort(struct file *file, unsigned int cmd, unsigned long arg); /* IOCTL Function calls! */
-_Bool comp(ll t_stamp_l, ll t_stamp_r, _Bool is_ascending);    /* comparison between two long long, with flag */
-#define PREFIX 256 /* this is string's max length*/
-#define LST_MAX 100 /* and list can handle up to 10000, if possible. */
+int comp(ll t_stamp_l, ll t_stamp_r, _Bool is_ascending);    /* comparison between two long long, with flag */
+#define PREFIX 32 /* this is string's max length*/
+#define LST_MAX 200 /* and list can handle up to 10000, if possible. */
 #define UUID_LEN 36
  

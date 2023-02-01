@@ -1,4 +1,4 @@
-#include <linux/ioctl.h>
+#include <sys/ioctl.h>
 enum __IOCTL_CMD__ {
 __ZERO__,   /* literally 0. */
 __PROTO_CLEAR__,   /* Clear function call */

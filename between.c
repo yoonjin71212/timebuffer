@@ -5,11 +5,9 @@
 int8_t between( list * lst, char * item, node * b, node * n , uint64_t len , uint64_t t_stamp)
 {
     node * element ;
-    if ( ( element = ( node * ) kmalloc ( sizeof ( node ), SLAB_MEM_SPREAD ) ) == NULL ) {
-        kfree( element ); //I will free allocated node...
+    if ( ( element = ( node * ) kmalloc ( sizeof ( node ), GFP_ATOMIC ) ) == NULL ) {
         return 1 ;
     }
-    element->key = LST_ERR;
     if ( ( b != n -> prev ) ) { //you can't push your element when extra nodes are in between of two nodes.
         kfree( element ); //So, I will free allocated node...
         return -1;
@@ -34,9 +32,9 @@ int8_t enqueue ( list * lst, const char * item , uint64_t len, uint64_t t_stamp)
 } // alias for enquque
 void concat_list ( list * lst, list * lst_target )
 {
-    node * push_node = kmalloc(sizeof(node),SLAB_MEM_SPREAD);
-    node * target_node = kmalloc(sizeof(node),SLAB_MEM_SPREAD) ;
-    node * target_end = kmalloc(sizeof(node),SLAB_MEM_SPREAD);
+    node * push_node = kmalloc(sizeof(node),GFP_ATOMIC);
+    node * target_node = kmalloc(sizeof(node),GFP_ATOMIC) ;
+    node * target_end = kmalloc(sizeof(node),GFP_ATOMIC);
     if((lst_target->size&lst->size)==0) {
         return;
     }

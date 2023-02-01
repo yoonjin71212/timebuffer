@@ -1,7 +1,6 @@
 
-## AndongSoju, Sortable FIFO Device Driver for Linux
+## TimeBuffer, Timestamp-based Sortable FIFO Device Driver for Linux
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/31857db2f4aa40968e75023a1e951966)](https://www.codacy.com/gh/yoonjin2/andongsoju/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yoonjin2/andongsoju&amp;utm_campaign=Badge_Grade)
-![alt text](https://img.danawa.com/prod_img/500000/740/291/img/5291740_1.jpg?shrink=330:330&_v=20180830142133)
 
 # headers
 ----------------
@@ -40,7 +39,7 @@ typedef __buf_info_t__ __BUF__;
     
 **Use with caution**
 
-This is device driver that do all tasks in GFP_KERNEL.
+This is device driver that do all tasks in GFP_ATOMIC.
 
 You can change its allocation space.
 

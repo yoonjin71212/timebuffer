@@ -3,6 +3,7 @@
 #include <linux/init.h>
 #include <linux/device.h>
 #include <linux/device/class.h>
+#include <linux/mutex.h>
 #include <linux/slab.h>
 #include <linux/module.h>
 #include <linux/fs.h>
@@ -16,6 +17,7 @@
 #define BUFFER_MAX PREFIX
 int __MAJOR__;
 int __MINOR__;
+struct mutex io_mutex;
 const char * UUID_TEXT="1234567890abcdefghijklmnopqrstuvwxyz";
 int8_t err;
 
@@ -57,10 +59,10 @@ void GET_UUID (char * string)
 
 int __init init_device (void)
 {
-    CLASSNAME=kmalloc(sizeof(char)*UUID_LEN,SLAB_MEM_SPREAD);
-    NAME=kmalloc(sizeof(char)*UUID_LEN,SLAB_MEM_SPREAD);
+    CLASSNAME=kmalloc(sizeof(char)*UUID_LEN,GFP_ATOMIC);
+    NAME=kmalloc(sizeof(char)*UUID_LEN,GFP_ATOMIC);
     GET_UUID(NAME);   /*Name is by UUID */
-    __device_name__=kmalloc(sizeof(char)*UUID_LEN,SLAB_MEM_SPREAD);
+    __device_name__=kmalloc(sizeof(char)*UUID_LEN,GFP_ATOMIC);
                                  /* * * * * * * * * */
     GET_UUID(CLASSNAME);         /* Class name and  */
     GET_UUID(__device_name__);   /* Device name is  */
@@ -72,7 +74,7 @@ int __init init_device (void)
     if(err < 0) {
         printk(KERN_ERR "Registering Character Device failed with %d\n", err);
     }
-    lst=kmalloc(sizeof(list),SLAB_MEM_SPREAD);    /*List is allocated here*/
+    lst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
     init_list(lst);                          /*Now, this initialized your list.*/
     cdev_init(&cdev,&fops);                  /*Gonna initialize its cdev*/
     cdev.owner = THIS_MODULE;                /*Owner is this module, obviously.*/
@@ -92,6 +94,7 @@ int __init init_device (void)
     
     printk (KERN_INFO "Buffered Device Initialized; Please check /dev/%s\n",__device_name__ );   /* You can check its location *
                                                                                                   * via dmesg command          */
+    mutex_init(&io_mutex);
     return 0;
 }
 void __exit clean_device(void)
@@ -144,7 +147,7 @@ ssize_t device_write (struct file * file,
     ssize_t ret = (ssize_t)len;
     int err;
     char * data;
-    data=kmalloc(sizeof(char)*BUFFER_MAX,SLAB_MEM_SPREAD); /*allocates data region */
+    data=kmalloc(sizeof(char)*BUFFER_MAX,GFP_ATOMIC); /*allocates data region */
     err = copy_from_user(data,buf,len);               /*Now, it will copy userdata into kernel area*/
     if(err<0) {
         return err;
@@ -159,22 +162,30 @@ ssize_t device_write (struct file * file,
 long int __user io_sort(struct file *file, unsigned int cmd, unsigned long arg) {
 
     /*IOCTL Function calls, by command */
+    if(mutex_is_locked(&io_mutex)) {
+        return 0;
+    }
+    mutex_trylock(&io_mutex);
     switch(cmd) {
     case __CLEAR__:
         empty_list(lst);
         break;  
     case __SORT_ASCENDING__:
         sort_func(lst,1); 
+        printk(KERN_INFO "IOCTL Call: Ascending Sort");
         break;  
     case __SORT_DESCENDING__:
         sort_func(lst,0); 
+        printk(KERN_INFO "IOCTL Call: Descending Sort");
         break;  
     case __SIZE_CALL__:
+        printk(KERN_INFO "IOCTL Call: Size Call");
         return size(lst);
     default :
-        break;  
+        printk(KERN_INFO "Empty IOCTL Call!");
     }
-    printk(KERN_INFO "IOCTL Called, command number is (%d)", cmd); /*Log for IOCTL */
+    printk(KERN_INFO "IOCTL Called, command number is (%u)", cmd); /*Log for IOCTL */
+    mutex_unlock(&io_mutex);
     return 0;
 }
 

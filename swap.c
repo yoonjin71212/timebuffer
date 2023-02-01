@@ -1,12 +1,12 @@
 #include "buffer.h"
 #include <linux/slab.h>
 #include <linux/string.h>
-void swap_struct ( void * a, void * b )
+void swap_string ( char * a, char * b )
 {
-    void **tmp;
-    tmp = &a;
-    memcpy(&a,&b,sizeof(void*));
-    memcpy(&b,tmp,sizeof(void*));
+    char * tmp = (char*)kmalloc(TEMP_SIZE,GFP_ATOMIC);
+    strcpy(tmp,a);
+    strcpy(a,b);
+    strcpy(a,tmp);
     
 } /*swaps two values' memory address,   *
    *this is far better...               */
