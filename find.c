@@ -3,7 +3,7 @@
 // find node
 node * find ( list * lst, unsigned char * key )
 {
-    node * p; //we use this node as cursor
+    node * p; //we use this nde as cursor
     p = lst -> front -> next ; //so, starting from first node
     while ( p != lst -> rear ) { //find it till the end.
         if ( !memcmp( p, lst -> rear, sizeof(node) ) ) {

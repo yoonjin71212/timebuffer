@@ -3,13 +3,15 @@
 // function that empties list.
 void empty_list ( list * lst )
 {
-    node *element = lst-> front->next ; // list is first value, that is next of the front node
+    node *element = lst-> front ; // list is first value, that is next of the front node
     if(lst->size == 0) {
         return;
     }
-    while ( element != lst -> rear ) { // while list is not rear node
-        kfree ( element ) ;           // free the list
-        element = element -> next ;   // go to the next node
+    while ( element->next != lst -> rear ) { // while list is not rear node
+        node *new_addr = element->next->next;
+        kfree ( element->next ) ;           // free the list
+        element -> next = new_addr ;   // go to the next node
+        element = element->next;
     }
     lst -> front -> next = lst -> rear ;
     lst -> rear -> prev = lst -> front ;

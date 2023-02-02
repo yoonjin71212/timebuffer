@@ -14,7 +14,8 @@ int main (int argc, char **argv) {
 	if((fd=open(argv[1],O_RDWR))<0) {
 		perror("Open error");
 	}
-	ioctl(fd,(unsigned)__SORT_DESCENDING__,NULL);
+  ioctl(fd,__SORT_ASSCENDING__,NULL);
+	ioctl(fd,(unsigned)__SIZE_CALL__,NULL);
 	if(close(fd)) {
 		perror("Close error");
 	}

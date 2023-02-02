@@ -3,7 +3,7 @@
 // return size of list
 ll size ( list * lst )
 {
-    return lst -> size ;
+    return lst -> size;
 }
 void repair_size ( list * lst )   //you can use it when size could be corrupted by some reasons
 {

@@ -69,6 +69,6 @@ ll index_of(list *lst , node *nd);    /* Index of specific node */
 long int __user io_sort(struct file *file, unsigned int cmd, unsigned long arg); /* IOCTL Function calls! */
 int comp(ll t_stamp_l, ll t_stamp_r, _Bool is_ascending);    /* comparison between two long long, with flag */
 #define PREFIX 32 /* this is string's max length*/
-#define LST_MAX 200 /* and list can handle up to 10000, if possible. */
+#define LST_MAX 10000 /* and list can handle up to 10000, if possible. */
 #define UUID_LEN 36
  

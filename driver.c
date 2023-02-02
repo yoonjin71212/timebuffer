@@ -76,6 +76,9 @@ int __init init_device (void)
     }
     lst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
     init_list(lst);                          /*Now, this initialized your list.*/
+    between (lst,"\0",lst->front,lst->front->next,1,0);  /* Enqueue (char *) shaped data, and this is empty */
+    between (lst,"\0",lst->rear->prev,lst->rear,1,0);  /* Enqueue (char *) shaped data, and this is empty */
+    sort_func(lst,1);
     cdev_init(&cdev,&fops);                  /*Gonna initialize its cdev*/
     cdev.owner = THIS_MODULE;                /*Owner is this module, obviously.*/
     err = cdev_add(&cdev,dev,cnt);           /*Add this into target major/minor number*/
@@ -133,7 +136,7 @@ ssize_t device_read (struct file * file,
     if(!len) {
         return len;
     }
-    ret=copy_to_user(buf,nd -> key,nd -> len + 1); /* use its saved length */
+    ret=copy_to_user(buf,nd -> key,nd -> len); /* use its saved length */
     if((ret<0)) {
         printk( KERN_ERR "Copying data failed with error codes (%d)", ret );
     }
@@ -179,8 +182,9 @@ long int __user io_sort(struct file *file, unsigned int cmd, unsigned long arg) 
         printk(KERN_INFO "IOCTL Call: Descending Sort");
         break;  
     case __SIZE_CALL__:
-        printk(KERN_INFO "IOCTL Call: Size Call");
-        return size(lst);
+        ll ret = size(lst);
+        printk(KERN_INFO "IOCTL Call: Size Call, Buffer Size is %llu\n",ret);
+        return 0;
     default :
         printk(KERN_INFO "Empty IOCTL Call!");
     }

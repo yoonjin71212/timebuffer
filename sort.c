@@ -14,8 +14,8 @@ _Bool regen_sorted( list * lst , _Bool is_ascending) {
     _Bool ret = 0;
     nd = kmalloc (sizeof(node),GFP_ATOMIC);
     for (nd = lst -> front -> next;nd!=lst->rear->prev;nd=nd->next) {
-        ret=(!comp(nd->t_stamp,nd->next->t_stamp,is_ascending));
-        if (ret) {
+        ret=(comp(nd->t_stamp,nd->next->t_stamp,is_ascending>0));
+        if (!ret) {
             break;
         }
     }
@@ -31,17 +31,17 @@ void sortthree ( list * lst , _Bool is_ascending)
     if(lst->is_sorted) {
         return ;
     }
-    if (comp(front->t_stamp , mid->t_stamp,is_ascending) ) {
+    if (comp(front->t_stamp , mid->t_stamp,is_ascending)<=0 ) {
         swap_int (&front->t_stamp,&mid->t_stamp);
         swap_int (&front->len,&mid->len);
         swap_string (front->key,mid->key );
     }
-    if (comp(front->t_stamp , rear->t_stamp,is_ascending) ) {
+    if (comp(front->t_stamp , rear->t_stamp,is_ascending)<=0 ) {
         swap_int ( &front->t_stamp,&rear->t_stamp);
         swap_int ( &front->len,&rear->len);
         swap_string (front->key,rear->key );
     }
-    if ( comp(mid->t_stamp , rear->t_stamp,is_ascending) ) {
+    if ( comp(mid->t_stamp , rear->t_stamp,is_ascending)<=0 ) {
         swap_int ( &mid->t_stamp,&rear->t_stamp);
         swap_int ( &mid->len,&rear->len);
         swap_string (mid->key,rear->key );
@@ -54,10 +54,6 @@ void sort_func ( list * lst , _Bool is_ascending )
 
     node *piv,*track;
     list *llst, *rlst;
-    llst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
-    rlst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
-    piv = kmalloc(sizeof(node),GFP_ATOMIC);
-    track = kmalloc(sizeof(node),GFP_ATOMIC);
 
     if ( lst -> size < 2 ) {
         return;
@@ -66,9 +62,13 @@ void sort_func ( list * lst , _Bool is_ascending )
     if(lst->is_sorted) {
         return;
     }
+    llst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
+    rlst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
+    piv = kmalloc(sizeof(node),GFP_ATOMIC);
+    track = kmalloc(sizeof(node),GFP_ATOMIC);
     init_list (llst);
     init_list (rlst);
-    sortthree( lst , is_ascending );
+    //sortthree( lst , is_ascending );
     piv = lst -> front -> next;
     for ( track = lst -> front -> next ; track != lst -> rear ; track = track -> next ) {
         if ( comp(track -> t_stamp , piv -> t_stamp, is_ascending)>0 ) {
@@ -87,8 +87,8 @@ void sort_func ( list * lst , _Bool is_ascending )
     }
     /* Concatenates its left-ordered list */
     concat_list(lst,llst);
-    /* Concatenates its right-ordered list */
     concat_list(lst,rlst);
+    /* Concatenates its right-ordered list */
     lst -> is_sorted = regen_sorted(lst,is_ascending);
     /* Regenerate its flag*/
 }
