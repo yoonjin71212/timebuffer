@@ -25,7 +25,7 @@ typedef __buf_info_t__ __BUF__;
 #define __SORT_ASCENDING__ _IOWR(IOCTL_MAGIC,__PROTO_SORT_ASCENDING__, __buf_info_t__)
 #define __SORT_DESCENDING__ _IOWR(IOCTL_MAGIC,__PROTO_SORT_DESCENDING__, __buf_info_t__)
 #define __SIZE_CALL__ _IOWR(IOCTL_MAGIC,__PROTO_SIZE_CALL__, __buf_info_t__)
-#define LST_ERR "-100000000000"
+#define LST_ERR "-100000"
 ```
 
 # IOCTL comments as table
