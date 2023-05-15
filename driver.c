@@ -20,6 +20,7 @@ int __MINOR__;
 struct mutex io_mutex;
 const char * UUID_TEXT="1234567890abcdefghijklmnopqrstuvwxyz";
 int8_t err;
+uint32_t ts;
 
 list * lst;
 struct file_operations fops = {
@@ -28,7 +29,6 @@ struct file_operations fops = {
     .open		= device_open,
     .release	=device_release,
     .owner		=THIS_MODULE,
-    .unlocked_ioctl = io_sort,
 };
 struct cdev cdev;
 struct class *CLASS = NULL;
@@ -76,9 +76,6 @@ int __init init_device (void)
     }
     lst=kmalloc(sizeof(list),GFP_ATOMIC);    /*List is allocated here*/
     init_list(lst);                          /*Now, this initialized your list.*/
-    between (lst,"\0",lst->front,lst->front->next,1,0);  /* Enqueue (char *) shaped data, and this is empty */
-    between (lst,"\0",lst->rear->prev,lst->rear,1,0);  /* Enqueue (char *) shaped data, and this is empty */
-    sort_func(lst,1);
     cdev_init(&cdev,&fops);                  /*Gonna initialize its cdev*/
     cdev.owner = THIS_MODULE;                /*Owner is this module, obviously.*/
     err = cdev_add(&cdev,dev,cnt);           /*Add this into target major/minor number*/
@@ -148,7 +145,7 @@ ssize_t device_write (struct file * file,
                       loff_t *offset)
 {
     ssize_t ret = (ssize_t)len;
-    int err;
+    int err, i;
     char * data;
     data=kmalloc(sizeof(char)*BUFFER_MAX,GFP_ATOMIC); /*allocates data region */
     err = copy_from_user(data,buf,len);               /*Now, it will copy userdata into kernel area*/
@@ -156,43 +153,17 @@ ssize_t device_write (struct file * file,
         return err;
     }
     if(full(lst)) {
-        dequeue(lst);  /* if it is full, trashes its last data */
+        for(i=0;i<CLEAR_THRESHOLD;i++) {
+            dequeue(lst);  /* if it is full, trashes its last data */
+        }
+        return ret;
     }
     enqueue (lst,data,strlen(data),0);  /* Enqueue (char *) shaped data */
     return ret;
 }
 
-long int __user io_sort(struct file *file, unsigned int cmd, unsigned long arg) {
-
-    /*IOCTL Function calls, by command */
-    if(mutex_is_locked(&io_mutex)) {
-        return 0;
-    }
-    mutex_trylock(&io_mutex);
-    switch(cmd) {
-    case __CLEAR__:
-        empty_list(lst);
-        break;  
-    case __SORT_ASCENDING__:
-        sort_func(lst,1); 
-        printk(KERN_INFO "IOCTL Call: Ascending Sort");
-        break;  
-    case __SORT_DESCENDING__:
-        sort_func(lst,0); 
-        printk(KERN_INFO "IOCTL Call: Descending Sort");
-        break;  
-    case __SIZE_CALL__:
-        ll ret = size(lst);
-        printk(KERN_INFO "IOCTL Call: Size Call, Buffer Size is %llu\n",ret);
-        return 0;
-    default :
-        printk(KERN_INFO "Empty IOCTL Call!");
-    }
-    printk(KERN_INFO "IOCTL Called, command number is (%u)", cmd); /*Log for IOCTL */
-    mutex_unlock(&io_mutex);
-    return 0;
-}
 
 module_init(init_device);
 module_exit(clean_device);
+
 

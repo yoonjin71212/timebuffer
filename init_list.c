@@ -3,8 +3,8 @@
 #include <linux/string.h>
 void init_list ( list * lst )   // init list
 {
-    lst -> front = ( node * ) kmalloc( sizeof ( node ), GFP_ATOMIC );  // rear pointer. This is allocated into GFP_ATOMIC
-    lst -> rear = ( node * ) kmalloc( sizeof ( node ), GFP_ATOMIC );  // rear pointer. This is allocated into GFP_ATOMIC
+    lst -> front = ( node * ) kmalloc( sizeof ( node ), GFP_KERNEL );  // rear pointer. This is allocated into GFP_KERNEL
+    lst -> rear = ( node * ) kmalloc( sizeof ( node ), GFP_KERNEL );  // rear pointer. This is allocated into GFP_KERNEL
     lst -> front -> key = LST_ERR;
     lst -> rear -> key =  LST_ERR;
     reset_list(lst);

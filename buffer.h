@@ -8,7 +8,7 @@
 #include <linux/types.h>
 #include <asm/uaccess.h>
 #include "buffer_io.h"
-#define TEMP_SIZE 32
+#define TEMP_SIZE 8192
 typedef long long ll;
 
 typedef struct node {
@@ -21,7 +21,6 @@ typedef struct node {
 /*list's node */
 
 typedef struct list {
-    _Bool is_sorted;
     node *front;
     node *rear;
     ll size;
@@ -46,11 +45,6 @@ void empty_list ( list * lst ) ; /* WARNING: it cleans all data ! */
 node * find ( list * lst, unsigned char * key ) ; /* you can specify node with your key */
 node * index_node ( list * lst, ll i ) ; /* this returns (i+1)th node. */
 
-/* swap functions for quick sort implementation */
-void swap_string ( char * a, char * b ); 
-void swap_int( int64_t * a, int64_t * b );
-/*----------------------------------------------*/
-
 int __init init_device (void); /* Initialization of its device */
 
 void __exit clean_device(void);/* exit call */
@@ -63,12 +57,10 @@ ssize_t device_write (struct file *, const char *, size_t, loff_t *);
 /*---------------------------------------------------------------------------------*/
 void GET_UUID (char * string) ;   /* UUID generation */
 
-void sort_func ( list * lst , _Bool is_ascending ); /* Quick sort */
-void sortthree ( list * lst , _Bool is_ascending ); /* Needed for Quick sort implementation */
 ll index_of(list *lst , node *nd);    /* Index of specific node */
-long int __user io_sort(struct file *file, unsigned int cmd, unsigned long arg); /* IOCTL Function calls! */
-int comp(ll t_stamp_l, ll t_stamp_r, _Bool is_ascending);    /* comparison between two long long, with flag */
-#define PREFIX 32 /* this is string's max length*/
-#define LST_MAX 10000 /* and list can handle up to 10000, if possible. */
+int comp(ll t_stamp_l, ll t_stamp_r);    /* comparison between two long long, with flag */
+#define PREFIX 8192 /* this is string's max length*/
+#define LST_MAX 1000 /* and list can handle up to 10000, if possible. */
+#define CLEAR_THRESHOLD 200
 #define UUID_LEN 36
  

@@ -1,16 +1,15 @@
 #include "buffer.h"
 #include <linux/string.h>
 #include <linux/slab.h>
+extern int ts;
 // add number between two nodes
-int8_t between( list * lst, char * item, node * b, node * n , uint64_t len , uint64_t t_stamp)
-{
+int8_t between( list * lst, char * item, node * b, node * n , uint64_t len , uint64_t t_stamp) {
     node * element ;
-    if ( ( element = ( node * ) kmalloc ( sizeof ( node ), GFP_ATOMIC ) ) == NULL ) {
-        return 1 ;
-    }
     if ( ( b != n -> prev ) ) { //you can't push your element when extra nodes are in between of two nodes.
-        kfree( element ); //So, I will free allocated node...
         return -1;
+    }
+    else if ( ( element = ( node * ) kmalloc ( sizeof ( node ), GFP_KERNEL ) ) == NULL ) {
+        return 1 ;
     } else {
         element -> key = item ; //this is your key.
         element -> t_stamp = t_stamp; // timestamp inserted
@@ -26,15 +25,16 @@ int8_t between( list * lst, char * item, node * b, node * n , uint64_t len , uin
 int8_t enqueue ( list * lst, const char * item , uint64_t len, uint64_t t_stamp)
 {
     if(!t_stamp) {
-        t_stamp = ktime_get_real_ns();
+        ts++;
+        t_stamp = ts;
     }
     return between ( lst, (char *)item, lst-> rear -> prev ,  lst -> rear , len, t_stamp);
 } // alias for enquque
 void concat_list ( list * lst, list * lst_target )
 {
-    node * push_node = kmalloc(sizeof(node),GFP_ATOMIC);
-    node * target_node = kmalloc(sizeof(node),GFP_ATOMIC) ;
-    node * target_end = kmalloc(sizeof(node),GFP_ATOMIC);
+    node * push_node = kmalloc(sizeof(node),GFP_KERNEL);
+    node * target_node = kmalloc(sizeof(node),GFP_KERNEL) ;
+    node * target_end = kmalloc(sizeof(node),GFP_KERNEL);
     if((lst_target->size&lst->size)==0) {
         return;
     }

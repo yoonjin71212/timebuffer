@@ -4,7 +4,7 @@
 // function that removes the item
 node * remove_item ( list * lst, node * element )
 {
-    node * val;
+    node * val = NULL;
     if(element==NULL) {
         return val;
     }
@@ -28,7 +28,15 @@ node * remove_item ( list * lst, node * element )
 }
 node * dequeue ( list * lst )
 {
-    node * i = remove_item ( lst, lst -> front -> next ) ;
-    return i;
+
+    node * i = lst -> front -> next;
+    node * j = lst -> front -> next;
+    while(i!=lst->rear) {
+        if (j->t_stamp>i->t_stamp) {
+            j = i;
+        }
+        i=i->next;
+    }
+    return remove_item(lst,j);
 } //alias to dequeue action
 MODULE_LICENSE("GPL");

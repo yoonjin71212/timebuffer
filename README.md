@@ -34,7 +34,7 @@ __PROTO_SIZE_CALL__,
     
 **Use with caution**
 
-This is device driver that do all tasks in GFP_ATOMIC.
+This is device driver that do all tasks in GFP_KERNEL.
 
 You can change its allocation space.
 

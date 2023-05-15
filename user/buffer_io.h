@@ -11,8 +11,8 @@ __PROTO_SIZE_CALL__, /*Size request*/
 #define IOCTL_MAGIC 'G' /*Magic letter */
 /*Actual IOCTL Commands, are here. */
 #define __CLEAR__ _IO(IOCTL_MAGIC,(unsigned int)__PROTO_CLEAR__) 
-#define __SORT_ASCENDING__ _IO(IOCTL_MAGIC,(unsigned int)__PROTO_SORT_ASCENDING__)
-#define __SORT_DESCENDING__ _IO(IOCTL_MAGIC,(unsigned int)__PROTO_SORT_DESCENDING__)
+#define __SORT_ASCENDING__ _IOW(IOCTL_MAGIC,(unsigned int)__PROTO_SORT_ASCENDING__,struct{})
+#define __SORT_DESCENDING__ _IOW(IOCTL_MAGIC,(unsigned int)__PROTO_SORT_DESCENDING__,struct{})
 #define __SIZE_CALL__ _IO(IOCTL_MAGIC,(unsigned int)__PROTO_SIZE_CALL__)
 /*-------------------------------*/
 /* This is error code for internal error detection */
