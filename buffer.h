@@ -7,7 +7,6 @@
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <asm/uaccess.h>
-#include "buffer_io.h"
 #define TEMP_SIZE 8192
 typedef long long ll;
 
@@ -63,4 +62,4 @@ int comp(ll t_stamp_l, ll t_stamp_r);    /* comparison between two long long, wi
 #define LST_MAX 1000 /* and list can handle up to 10000, if possible. */
 #define CLEAR_THRESHOLD 200
 #define UUID_LEN 36
- 
+#define LST_ERR "-1000000000"
