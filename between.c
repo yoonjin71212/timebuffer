@@ -1,7 +1,6 @@
 #include "buffer.h"
 #include <linux/string.h>
 #include <linux/slab.h>
-extern int ts;
 // add number between two nodes
 int8_t between( list * lst, char * item, node * b, node * n , uint64_t len , uint64_t t_stamp) {
     node * element ;
@@ -25,8 +24,7 @@ int8_t between( list * lst, char * item, node * b, node * n , uint64_t len , uin
 int8_t enqueue ( list * lst, const char * item , uint64_t len, uint64_t t_stamp)
 {
     if(!t_stamp) {
-        ts++;
-        t_stamp = ts;
+        t_stamp = ktime_get_real_fast_ns() ;
     }
     return between ( lst, (char *)item, lst-> rear -> prev ,  lst -> rear , len, t_stamp);
 } // alias for enquque

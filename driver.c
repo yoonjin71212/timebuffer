@@ -20,7 +20,6 @@ int __MINOR__;
 struct mutex io_mutex;
 const char * UUID_TEXT="1234567890abcdefghijklmnopqrstuvwxyz";
 int8_t err;
-uint32_t ts;
 
 list * lst;
 struct file_operations fops = {
