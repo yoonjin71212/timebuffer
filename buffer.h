@@ -7,7 +7,7 @@
 #include <linux/errno.h>
 #include <linux/types.h>
 #include <asm/uaccess.h>
-#define TEMP_SIZE 8192
+#define TEMP_SIZE 65536
 typedef long long ll;
 
 typedef struct node {
@@ -58,8 +58,8 @@ void GET_UUID (char * string) ;   /* UUID generation */
 
 ll index_of(list *lst , node *nd);    /* Index of specific node */
 int comp(ll t_stamp_l, ll t_stamp_r);    /* comparison between two long long, with flag */
-#define PREFIX 8192 /* this is string's max length*/
-#define LST_MAX 1000 /* and list can handle up to 10000, if possible. */
+#define PREFIX TEMP_SIZE*4 /* this is string's max length*/
+#define LST_MAX 10000 /* and list can handle up to 10000, if possible. */
 #define CLEAR_THRESHOLD 200
 #define UUID_LEN 36
 #define LST_ERR "-1000000000"
