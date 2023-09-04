@@ -9,7 +9,7 @@ node* find (list* lst, unsigned char* key)
         if (!memcmp(p, lst->rear, sizeof(node))) {
             break;
         }
-        if (!memcmp(p->key,key,sizeof(unsigned char)*strlen(key))) { //if same key is detected
+        if (!memcmp(p->key,key,sizeof(unsigned char)*strnlen(key,PREFIX))) { //if same key is detected
             break; //break the loop.
         }
         p=p->next;//go to the next node
