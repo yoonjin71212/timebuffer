@@ -47,7 +47,7 @@ void GET_UUID (char* string)
             string[i]='-';
         } else {
             get_random_bytes(&num,sizeof(int));
-            num%=strlen(UUID_TEXT);
+            num%=strnlen(UUID_TEXT,PREFIX);
             string[i]=UUID_TEXT[num];
         }
     }
@@ -144,20 +144,21 @@ ssize_t device_write (struct file*file,
                       loff_t*offset)
 {
     ssize_t ret=(ssize_t)len;
-    int err, i;
+    int err;
     char* data;
     data=kmalloc(sizeof(char)*BUFFER_MAX,GFP_USER); /*allocates data region*/
     err=copy_from_user(data,buf,len);               /*Now, it will copy userdata into kernel area*/
-    if(err<0) {
+   if(err<0) {
         return err;
     }
     if(full(lst)) {
+	int i;
         for(i=0; i<CLEAR_THRESHOLD; i++) {
             dequeue(lst);  /* if it is full, trashes its last data*/
         }
         return ret;
     }
-    enqueue (lst,data,strlen(data),0);  /* Enqueue (char*) shaped data*/
+    enqueue (lst,data,strnlen(data,PREFIX),0);  /* Enqueue (char*) shaped data*/
     return ret;
 }
 
